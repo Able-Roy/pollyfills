@@ -1,0 +1,33 @@
+const jsonStringify = (data) => {
+	if(typeof data === 'number' || typeof data === 'string' || typeof data === 'boolean' || data === null) {
+  	return typeof data === 'string' ? `"${data.replace(/"/g, '\\"')}"` : String(data)
+  }
+  if(Array.isArray(data)) {
+  	return `[${data.map(item => jsonStringify(item)).join(',')}]`
+  }
+  if(typeof data === 'object') {
+    let keys = Object.keys(data)
+    
+  	let strOb = `{`
+  	keys.forEach((item, index) => {
+    	strOb = ` ${strOb}"${item}":${jsonStringify(data[item])}`
+        if(index !== keys.length - 1) {
+          strOb = strOb + ', '
+        }
+    })
+    strOb = `${strOb}}`
+    return strOb
+  }
+  return undefined
+}
+
+// Example usage:
+const exampleObject = {
+  name: "ChatGPT",
+  isActive: true,
+  features: ["AI", "Chatting", 1],
+  details: null,
+  hehe: undefined
+};
+
+console.log(jsonStringify(exampleObject));
