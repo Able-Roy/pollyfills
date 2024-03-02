@@ -1,0 +1,29 @@
+const promiseAny = (promises) => {
+  let rejections = []
+  return new Promise((resolve, reject) => {
+  	promises.forEach((item, index) => {
+    	Promise.resolve(item).then(res => {
+      	resolve(res)
+      }).catch(err => {
+      	rejections.push(err)
+        if(rejections.length === promises.length) {
+        	reject(new AggregateError(rejections, 'All promises were rejected'))
+        }
+      })
+    } ) 
+  }) 
+}
+
+const promise1 = Promise.reject('rejected 1')
+const promise2 = Promise.reject('reject  2')
+const promise3 = Promise.reject('reject 3')
+const promise4 = new Promise((resolve, reject) => reject('reject4'))
+const promise5 = new Promise((resolve, reject) => setTimeout(() => resolve('resolved 5'), 3000))
+
+
+promiseAny([promise1, promise2, promise3, promise4, promise5]).then(res => {
+	console.log(res)
+}).catch(err => {
+	console.log(err.message)
+	console.log(err.errors)
+})
